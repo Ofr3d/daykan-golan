@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מעקב חלק — PRECIS</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0eeea; --white:#fff; --border:#e0ddd8;
+  --ink:#111; --mid:#555; --soft:#999;
+  --accent:#d94f00; --accent-bg:#fff3ee;
+  --green:#16a34a; --green-bg:#f0fdf4;
+  --yellow:#d97706; --yellow-bg:#fffbeb;
+  --red:#dc2626; --red-bg:#fef2f2;
+  --mono:'DM Mono',monospace; --sans:'DM Sans',sans-serif; --serif:'Playfair Display',serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--mono);font-size:13px;letter-spacing:.1em;color:var(--ink);text-transform:uppercase}
+.logo-dot{color:var(--accent)}
+
+.hero{padding:56px 24px 0;text-align:center;max-width:560px;margin:0 auto}
+.hero-tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.hero-title{font-family:var(--serif);font-size:clamp(28px,4vw,42px);font-weight:700;color:var(--ink);margin-bottom:10px;line-height:1.1}
+.hero-sub{font-size:14px;font-weight:300;color:var(--mid)}
+
+/* SEARCH */
+.search-wrap{max-width:480px;margin:36px auto 0;padding:0 24px}
+.search-box{display:flex;gap:0;background:var(--white);border:1.5px solid var(--border);overflow:hidden;transition:border-color .15s}
+.search-box:focus-within{border-color:var(--accent)}
+.search-input{flex:1;font-family:var(--mono);font-size:14px;padding:14px 16px;border:none;outline:none;background:transparent;color:var(--ink);letter-spacing:.04em}
+.search-input::placeholder{color:var(--soft)}
+.search-btn{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:#fff;border:none;padding:0 22px;cursor:pointer;transition:background .15s;white-space:nowrap}
+.search-btn:hover{background:var(--accent)}
+
+/* RESULT */
+.result-wrap{max-width:540px;margin:28px auto 64px;padding:0 24px}
+
+.status-card{background:var(--white);border:1px solid var(--border)}
+
+.status-header{padding:20px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.status-serial{font-family:var(--mono);font-size:13px;color:var(--ink);letter-spacing:.06em}
+.status-badge{font-family:var(--mono);font-size:10px;letter-spacing:.08em;padding:5px 12px;text-transform:uppercase}
+.status-badge.approved{background:var(--green-bg);color:var(--green);border:1px solid #bbf7d0}
+.status-badge.pending{background:var(--yellow-bg);color:var(--yellow);border:1px solid #fde68a}
+.status-badge.rejected{background:var(--red-bg);color:var(--red);border:1px solid #fecaca}
+
+.status-banner{padding:16px 24px;border-bottom:1px solid var(--border)}
+.status-banner.approved{background:var(--green-bg);border-right:3px solid var(--green)}
+.status-banner.pending{background:var(--yellow-bg);border-right:3px solid var(--yellow)}
+.status-banner.rejected{background:var(--red-bg);border-right:3px solid var(--red)}
+.banner-title{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:3px}
+.banner-sub{font-size:12px;color:var(--mid)}
+
+.info-grid{display:grid;grid-template-columns:1fr 1fr;padding:20px 24px;gap:16px;border-bottom:1px solid var(--border)}
+.info-item-label{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:5px}
+.info-item-val{font-size:14px;font-weight:500;color:var(--ink)}
+.info-item-val.mono{font-family:var(--mono);font-size:12px}
+
+.qa-section{padding:20px 24px;border-bottom:1px solid var(--border)}
+.qa-title{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:14px}
+.qa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.qa-box{border:1px solid var(--border);padding:12px;text-align:center}
+.qa-box-label{font-family:var(--mono);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);margin-bottom:6px}
+.qa-box-val{font-size:20px;font-weight:700}
+.qa-box-val.pass{color:var(--green)}
+.qa-box-val.fail{color:var(--red)}
+.qa-box-val.neutral{color:var(--mid)}
+
+.dims-section{padding:16px 24px;border-bottom:1px solid var(--border);background:#fafaf9}
+.dims-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;padding:5px 0;border-bottom:1px solid var(--border)}
+.dims-row:last-child{border-bottom:none}
+.dims-key{color:var(--soft)}
+.dims-val{color:var(--ink);font-weight:500}
+
+.notes-section{padding:16px 24px;border-bottom:1px solid var(--border)}
+.notes-text{font-size:13px;color:var(--mid);line-height:1.6;font-style:italic}
+
+.timeline{padding:20px 24px}
+.tl-title{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:16px}
+.tl-items{position:relative;padding-right:20px}
+.tl-items::before{content:'';position:absolute;right:5px;top:6px;bottom:6px;width:1px;background:var(--border)}
+.tl-item{position:relative;padding-bottom:18px;padding-right:20px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;right:-8px;top:5px;width:10px;height:10px;border-radius:50%;border:2px solid var(--border);background:var(--white)}
+.tl-dot.done{background:var(--green);border-color:var(--green)}
+.tl-dot.active{background:var(--accent);border-color:var(--accent)}
+.tl-item-title{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.tl-item-time{font-family:var(--mono);font-size:10px;color:var(--soft)}
+
+.card-footer{padding:16px 24px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);background:#fafaf9}
+.footer-note{font-size:11px;color:var(--soft)}
+.footer-contact{font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--accent);text-decoration:none;text-transform:uppercase}
+.footer-contact:hover{text-decoration:underline}
+
+/* NOT FOUND */
+.not-found{text-align:center;padding:48px 24px}
+.nf-icon{font-size:40px;margin-bottom:16px}
+.nf-title{font-size:17px;font-weight:500;color:var(--ink);margin-bottom:8px}
+.nf-sub{font-size:13px;color:var(--mid)}
+
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">PRECIS<span class="logo-dot">.</span></div>
+  <span style="font-family:var(--mono);font-size:10px;color:var(--soft);letter-spacing:.06em">מעקב חלק</span>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">מעקב ואישור איכות</div>
+  <h1 class="hero-title">בדוק סטטוס החלק שלך</h1>
+  <p class="hero-sub">הזן מספר סידורי או סרוק את ה-QR המודפס על החלק</p>
+</div>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <input class="search-input" id="searchInput" type="text"
+      placeholder="PRECIS-2026-001"
+      onkeydown="if(event.key==='Enter')doSearch()">
+    <button class="search-btn" onclick="doSearch()">חפש ←</button>
+  </div>
+</div>
+
+<div class="result-wrap">
+  <div id="resultArea"></div>
+</div>
+
+<script>
+// ── DEMO DATA (יוחלף ב-API / Google Sheets בהמשך) ──
+const DEMO_PARTS = {
+  'PRECIS-2026-001': {
+    serial:   'PRECIS-2026-001',
+    customer: 'מפעל רונן בע"מ',
+    order:    'ORD-2026-042',
+    material: 'אל-חלד 304',
+    thickness: '3מ"מ',
+    operator: 'אורי',
+    date:     '2026-03-25',
+    status:   'approved',
+    qa: {
+      grade:   'A',
+      visual:  'pass',
+      dimX:    '299.95',
+      dimY:    '199.98',
+      notes:   'גמר תקין. אין שריטות. קצוות נקיים.',
+    },
+    timeline: [
+      {title:'הזמנה התקבלה',    time:'25.03.2026 · 08:14', done:true},
+      {title:'חיתוך לייזר',     time:'25.03.2026 · 10:32', done:true},
+      {title:'בדיקת QA',        time:'25.03.2026 · 11:45', done:true},
+      {title:'אריזה ומשלוח',    time:'26.03.2026 · 09:00', done:true},
+    ]
+  },
+  'PRECIS-2026-002': {
+    serial:   'PRECIS-2026-002',
+    customer: 'טק-מטל סולושיינס',
+    order:    'ORD-2026-043',
+    material: 'אלומיניום 6061',
+    thickness: '2מ"מ',
+    operator: 'יעקב',
+    date:     '2026-03-27',
+    status:   'pending',
+    qa: {
+      grade:   'B',
+      visual:  'note',
+      dimX:    '150.12',
+      dimY:    '80.03',
+      notes:   'שריטה קלה בפינה — אושר ע"י לקוח.',
+    },
+    timeline: [
+      {title:'הזמנה התקבלה',  time:'27.03.2026 · 09:00', done:true},
+      {title:'חיתוך לייזר',   time:'27.03.2026 · 11:20', done:true},
+      {title:'בדיקת QA',      time:'27.03.2026 · 13:00', active:true},
+      {title:'אריזה ומשלוח',  time:'ממתין',               done:false},
+    ]
+  }
+};
+
+// Read serial from URL param (when scanned from QR)
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const s = params.get('s') || params.get('serial');
+  if(s){
+    document.getElementById('searchInput').value = s;
+    doSearch();
+  }
+});
+
+function doSearch(){
+  const raw    = document.getElementById('searchInput').value.trim().toUpperCase();
+  const serial = raw.startsWith('PRECIS') ? raw : 'PRECIS-'+raw;
+  const part   = DEMO_PARTS[serial];
+  const area   = document.getElementById('resultArea');
+
+  if(!part){
+    area.innerHTML = `
+      <div class="not-found">
+        <div class="nf-icon">🔍</div>
+        <div class="nf-title">מספר סידורי לא נמצא</div>
+        <div class="nf-sub">בדוק את המספר על כרטיס החלק ונסה שנית.<br>
+        שגיאה? <a href="mailto:info@precis.co.il" style="color:var(--accent)">צור קשר</a></div>
+      </div>`;
+    return;
+  }
+
+  const qa      = part.qa;
+  const st      = part.status;
+  const stLabel = {approved:'✓ אושר — עבר QA', pending:'⏳ בתהליך', rejected:'✕ נפסל'}[st];
+  const gradeColor = (qa.grade==='A'||qa.grade==='B') ? 'pass' : 'fail';
+  const visLabel   = {pass:'✓ תקין', fail:'✕ פגם', note:'⚠ הערה'}[qa.visual];
+  const visColor   = {pass:'pass', fail:'fail', note:'neutral'}[qa.visual];
+
+  const tlHtml = part.timeline.map(t=>`
+    <div class="tl-item">
+      <div class="tl-dot ${t.done?'done':t.active?'active':''}"></div>
+      <div class="tl-item-title" style="color:${t.done||t.active?'var(--ink)':'var(--soft)'}">${t.title}</div>
+      <div class="tl-item-time">${t.time}</div>
+    </div>`).join('');
+
+  const dateFormatted = new Date(part.date).toLocaleDateString('he-IL',
+    {day:'2-digit',month:'2-digit',year:'numeric'});
+
+  area.innerHTML = `
+    <div class="status-card">
+      <div class="status-header">
+        <span class="status-serial">${part.serial}</span>
+        <span class="status-badge ${st}">${stLabel}</span>
+      </div>
+
+      <div class="status-banner ${st}">
+        <div class="banner-title">${stLabel}</div>
+        <div class="banner-sub">הזמנה ${part.order} · ${dateFormatted}</div>
+      </div>
+
+      <div class="info-grid">
+        <div>
+          <div class="info-item-label">לקוח</div>
+          <div class="info-item-val">${part.customer}</div>
+        </div>
+        <div>
+          <div class="info-item-label">מספר הזמנה</div>
+          <div class="info-item-val mono">${part.order}</div>
+        </div>
+        <div>
+          <div class="info-item-label">חומר</div>
+          <div class="info-item-val">${part.material}</div>
+        </div>
+        <div>
+          <div class="info-item-label">עובי</div>
+          <div class="info-item-val mono">${part.thickness}</div>
+        </div>
+      </div>
+
+      <div class="qa-section">
+        <div class="qa-title">תוצאות בדיקת QA</div>
+        <div class="qa-grid">
+          <div class="qa-box">
+            <div class="qa-box-label">ציון</div>
+            <div class="qa-box-val ${gradeColor}">${qa.grade}</div>
+          </div>
+          <div class="qa-box">
+            <div class="qa-box-label">בדיקת עין</div>
+            <div class="qa-box-val ${visColor}">${visLabel}</div>
+          </div>
+          <div class="qa-box">
+            <div class="qa-box-label">מפעיל</div>
+            <div class="qa-box-val neutral" style="font-size:14px">${part.operator}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dims-section">
+        <div class="dims-row"><span class="dims-key">מידה X נמדדה</span><span class="dims-val">${qa.dimX} מ"מ</span></div>
+        <div class="dims-row"><span class="dims-key">מידה Y נמדדה</span><span class="dims-val">${qa.dimY} מ"מ</span></div>
+      </div>
+
+      ${qa.notes ? `<div class="notes-section"><div class="qa-title">הערות</div><div class="notes-text">${qa.notes}</div></div>` : ''}
+
+      <div class="timeline">
+        <div class="tl-title">היסטוריית ייצור</div>
+        <div class="tl-items">${tlHtml}</div>
+      </div>
+
+      <div class="card-footer">
+        <span class="footer-note">PRECIS · ISO 9001:2015</span>
+        <a class="footer-contact" href="mailto:info@precis.co.il">צור קשר ←</a>
+      </div>
+    </div>`;
+}
+</script>
+</body>
+</html>

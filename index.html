@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>דייקן בגולן — עיבוד מתכת מדויק</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&family=Bebas+Neue&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── 3 SHADES ONLY ──
+   g1 = #1c1f24  darkest  → hero, nav, services, process, footer
+   g2 = #2a2e35  mid      → about, why, contact sections
+   g3 = #3a3e45  lightest → cards, form, elevated elements
+   accent = #c8a96e gold
+*/
+:root{
+  --g1:#1c1f24; --g2:#2a2e35; --g3:#3a3e45;
+  --accent:#c8a96e;
+  --on-dark:#e8e8e8; --on-dark-mid:#9ca3af; --on-dark-soft:#5a6270;
+  --mono:'DM Mono',monospace; --body:'Heebo',sans-serif; --display:'Bebas Neue',sans-serif;
+}
+[data-lang="en"]{direction:ltr}
+[data-lang="en"] .he{display:none}
+[data-lang="he"] .en{display:none}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--g1);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(28,31,36,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,169,110,0.12);padding:0 48px;height:62px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-mark{width:36px;height:36px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:20px;color:var(--g1)}
+.nav-name{font-family:var(--mono);font-size:13px;letter-spacing:.1em;color:var(--on-dark);text-transform:uppercase}
+.nav-name span{color:var(--accent)}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{font-size:13px;color:var(--on-dark-mid);text-decoration:none;letter-spacing:.04em;transition:color .15s}
+.nav-links a:hover{color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:16px}
+.lang-btn{font-family:var(--mono);font-size:11px;letter-spacing:.1em;background:transparent;border:1px solid var(--on-dark-soft);color:var(--on-dark-mid);padding:6px 12px;cursor:pointer;transition:all .15s}
+.lang-btn:hover{border-color:var(--accent);color:var(--accent)}
+.nav-cta{font-family:var(--mono);font-size:11px;letter-spacing:.1em;background:var(--accent);color:var(--g1);border:none;padding:10px 20px;cursor:pointer;font-weight:500;transition:opacity .15s}
+.nav-cta:hover{opacity:.85}
+
+/* HERO — g1 */
+.hero{min-height:100vh;background:var(--g1);position:relative;display:flex;align-items:center;overflow:hidden;padding:100px 80px 80px}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(200,169,110,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(200,169,110,0.04) 1px,transparent 1px);background-size:60px 60px}
+.hero-fade{position:absolute;inset:0;background:linear-gradient(to bottom,var(--g1) 0%,#141618 100%);opacity:.6}
+.hero-bar{position:absolute;top:0;right:15%;width:2px;height:100%;background:linear-gradient(to bottom,transparent,var(--accent),transparent);opacity:.25}
+.hero-content{position:relative;z-index:2;max-width:640px}
+.hero-tag{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:14px}
+.hero-tag::before{content:'';width:32px;height:1px;background:var(--accent)}
+h1{font-family:var(--display);font-size:clamp(60px,8vw,112px);line-height:.88;letter-spacing:2px;color:var(--on-dark);margin-bottom:28px}
+h1 .outline{display:block;-webkit-text-stroke:1px var(--accent);color:transparent}
+.hero-sub{font-size:17px;font-weight:300;line-height:1.75;color:var(--on-dark-mid);max-width:460px;margin-bottom:44px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-gold{font-family:var(--mono);font-size:12px;letter-spacing:.08em;background:var(--accent);color:var(--g1);border:none;padding:15px 34px;cursor:pointer;font-weight:500;text-decoration:none;display:inline-block;transition:opacity .15s}
+.btn-gold:hover{opacity:.85}
+.btn-outline-dark{font-family:var(--mono);font-size:12px;letter-spacing:.08em;background:transparent;color:var(--on-dark-mid);border:1px solid var(--on-dark-soft);padding:14px 30px;cursor:pointer;text-decoration:none;display:inline-block;transition:all .15s}
+.btn-outline-dark:hover{border-color:var(--on-dark-mid);color:var(--on-dark)}
+.btn-outline-light{font-family:var(--mono);font-size:12px;letter-spacing:.08em;background:transparent;color:var(--on-dark-mid);border:1px solid var(--on-dark-soft);padding:14px 30px;cursor:pointer;text-decoration:none;display:inline-block;transition:all .15s}
+.btn-outline-light:hover{border-color:var(--on-dark-mid);color:var(--on-dark)}
+.hero-stats{position:absolute;bottom:56px;right:80px;z-index:2;display:flex;flex-direction:column;gap:22px}
+[data-lang="en"] .hero-stats{right:auto;left:80px}
+.hs-num{font-family:var(--display);font-size:46px;color:var(--accent);line-height:1}
+.hs-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--on-dark-soft);text-transform:uppercase}
+.scroll-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;animation:bob 2s ease-in-out infinite}
+.scroll-hint span{font-family:var(--mono);font-size:9px;letter-spacing:.12em;color:var(--on-dark-soft)}
+.scroll-line{width:1px;height:36px;background:linear-gradient(to bottom,var(--accent),transparent)}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(5px)}}
+@keyframes fade-up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.hero-tag{animation:fade-up .5s .1s ease both}
+h1{animation:fade-up .5s .2s ease both}
+.hero-sub{animation:fade-up .5s .3s ease both}
+.hero-btns{animation:fade-up .5s .4s ease both}
+
+/* SECTION WRAPPERS — full width color blocks */
+.dark{background:var(--g1);width:100%}
+.light{background:var(--g2);width:100%}
+.inner{max-width:1200px;margin:0 auto;padding:80px 80px}
+
+/* SECTION HEADERS */
+.s-tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.s-title-dark{font-family:var(--display);font-size:clamp(32px,4vw,56px);letter-spacing:2px;color:var(--on-dark);line-height:.95;margin-bottom:0}
+.s-head{display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:56px}
+.s-text-dark{font-size:16px;font-weight:300;line-height:1.8;color:var(--on-dark-mid);margin-bottom:32px}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.about-card{background:var(--g1);padding:44px 36px;position:relative}
+.about-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent)}
+.ac-name{font-family:var(--display);font-size:50px;color:var(--on-dark);letter-spacing:2px;line-height:1;margin-bottom:6px}
+.ac-role{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--on-dark-soft);text-transform:uppercase;margin-bottom:28px}
+.ac-items{display:flex;flex-direction:column;gap:12px}
+.ac-item{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:11px;color:var(--on-dark-mid);letter-spacing:.03em}
+.ac-item::before{content:'';width:18px;height:1px;background:var(--accent);flex-shrink:0}
+
+/* SERVICES */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--on-dark-soft)}
+.svc{background:var(--g2);padding:44px 32px;position:relative;overflow:hidden;transition:background .25s}
+.svc:hover{background:#31363f}
+.svc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .35s}
+.svc:hover::after{transform:scaleX(1);transform-origin:left}
+.svc-n{font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--on-dark-soft);margin-bottom:28px}
+.svc-icon{width:48px;height:48px;margin-bottom:20px;color:var(--accent)}
+.svc-name{font-family:var(--display);font-size:32px;letter-spacing:2px;color:var(--on-dark);margin-bottom:14px}
+.svc-desc{font-size:14px;font-weight:300;line-height:1.75;color:var(--on-dark-soft);margin-bottom:24px}
+.svc-specs{list-style:none;border-top:1px solid var(--on-dark-soft);padding-top:18px;display:flex;flex-direction:column;gap:8px}
+.svc-specs li{font-family:var(--mono);font-size:11px;color:var(--on-dark-mid);display:flex;align-items:center;gap:9px}
+.svc-specs li::before{content:'';width:12px;height:1px;background:var(--accent);flex-shrink:0}
+
+/* WHY */
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;background:var(--g1);margin-top:56px}
+.why-card{background:var(--g3);padding:36px 28px;border-top:2px solid transparent;transition:border-color .2s,background .2s}
+.why-card:hover{border-top-color:var(--accent);background:#454a52}
+.why-icon{width:40px;height:40px;margin-bottom:18px;color:var(--accent)}
+.why-title{font-family:var(--display);font-size:22px;letter-spacing:1px;color:var(--on-dark);margin-bottom:10px}
+.why-desc{font-size:13px;font-weight:300;line-height:1.7;color:var(--on-dark-soft)}
+
+/* PROCESS */
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:56px;position:relative}
+.steps-grid::before{content:'';position:absolute;top:27px;left:36px;right:36px;height:1px;background:linear-gradient(to left,transparent,var(--accent),var(--accent),transparent);opacity:.18}
+.step{padding:0 20px 0 0}
+.step:not(:first-child){padding-left:20px}
+.step-dot{width:54px;height:54px;border:1px solid var(--on-dark-soft);background:var(--g1);display:flex;align-items:center;justify-content:center;margin-bottom:22px;transition:border-color .2s}
+.step:hover .step-dot{border-color:var(--accent)}
+.step-n{font-family:var(--display);font-size:22px;color:var(--accent)}
+.step-title{font-family:var(--display);font-size:22px;letter-spacing:1px;color:var(--on-dark);margin-bottom:10px}
+.step-desc{font-size:13px;font-weight:300;line-height:1.75;color:var(--on-dark-soft)}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px}
+.cd{display:flex;align-items:flex-start;gap:14px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.cd:last-of-type{border-bottom:none}
+.cd-icon{width:38px;height:38px;background:var(--g3);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--accent)}
+.cd-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--on-dark-soft);margin-bottom:3px}
+.cd-val{font-size:14px;font-weight:500;color:var(--on-dark)}
+.cform{background:var(--g3);border-top:3px solid var(--accent);padding:36px}
+.cform-title{font-family:var(--display);font-size:30px;letter-spacing:1px;color:var(--on-dark);margin-bottom:24px}
+.ff{margin-bottom:14px}
+.ff label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--on-dark-mid);margin-bottom:7px}
+.ff input,.ff select,.ff textarea{width:100%;background:var(--g1);border:1px solid var(--on-dark-soft);color:var(--on-dark);font-family:var(--body);font-size:14px;padding:11px 13px;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--accent)}
+.ff textarea{min-height:84px;resize:vertical}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f-submit{width:100%;font-family:var(--mono);font-size:12px;letter-spacing:.08em;background:var(--g1);color:var(--on-dark);border:none;padding:14px;cursor:pointer;margin-top:6px;transition:background .15s;font-weight:500}
+.f-submit:hover{background:var(--accent);color:var(--g1)}
+
+/* FOOTER */
+footer{background:var(--g1);border-top:1px solid var(--g2);padding:36px 80px;display:flex;align-items:center;justify-content:space-between}
+.f-logo{font-family:var(--display);font-size:20px;letter-spacing:3px;color:var(--on-dark)}
+.f-logo span{color:var(--accent)}
+.f-links{display:flex;gap:24px;list-style:none}
+.f-links a{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--on-dark-soft);text-decoration:none;text-transform:uppercase;transition:color .15s}
+.f-links a:hover{color:var(--accent)}
+.f-copy{font-family:var(--mono);font-size:10px;color:var(--on-dark-soft)}
+
+@media(max-width:900px){
+  nav{padding:0 20px} .nav-links{display:none}
+  .hero{padding:100px 24px 80px} .hero-stats{display:none}
+  .inner{padding:56px 24px}
+  .about-grid{grid-template-columns:1fr;gap:36px}
+  .svc-grid{grid-template-columns:1fr}
+  .why-grid{grid-template-columns:1fr 1fr}
+  .steps-grid{grid-template-columns:1fr 1fr;gap:28px} .steps-grid::before{display:none}
+  .contact-grid{grid-template-columns:1fr;gap:40px}
+  footer{padding:28px 24px;flex-direction:column;gap:16px;text-align:center}
+  .f-links{flex-wrap:wrap;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-mark">D</div>
+    <div class="nav-name">DAYKAN<span>.</span>GOLAN</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#about"><span class="he">אודות</span><span class="en">About</span></a></li>
+    <li><a href="#services"><span class="he">שירותים</span><span class="en">Services</span></a></li>
+    <li><a href="#why"><span class="he">למה אנחנו</span><span class="en">Why Us</span></a></li>
+    <li><a href="#contact"><span class="he">צור קשר</span><span class="en">Contact</span></a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="lang-btn" onclick="toggleLang()"><span class="he">EN</span><span class="en">עב</span></button>
+    <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+      <span class="he">הצעת מחיר</span><span class="en">Get a Quote</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO — g1 -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-fade"></div>
+  <div class="hero-bar"></div>
+  <div class="hero-content">
+    <div class="hero-tag"><span class="he">הנדסה · דיוק · גולן</span><span class="en">Engineering · Precision · Golan</span></div>
+    <h1>
+      <span class="he">דייקן<br><span class="outline">בגולן</span></span>
+      <span class="en">DAYKAN<br><span class="outline">GOLAN</span></span>
+    </h1>
+    <p class="hero-sub">
+      <span class="he">חיתוך לייזר, כיפוף פחים וריתוך לייזר — מהקובץ לחלק המוגמר. דיוק הנדסי, שירות אישי, מלב הגולן.</span>
+      <span class="en">Laser cutting, sheet bending and laser welding — from file to finished part. Engineering precision, personal service, from the heart of the Golan.</span>
+    </p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn-gold"><span class="he">בקש הצעת מחיר</span><span class="en">Request a Quote</span></a>
+      <a href="#services" class="btn-outline-dark"><span class="he">השירותים שלנו</span><span class="en">Our Services</span></a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div><div class="hs-num">±0.05</div><div class="hs-lbl"><span class="he">דיוק מ"מ</span><span class="en">mm tolerance</span></div></div>
+    <div><div class="hs-num">2–4</div><div class="hs-lbl"><span class="he">ימי אספקה</span><span class="en">day lead time</span></div></div>
+    <div><div class="hs-num">ISO</div><div class="hs-lbl"><span class="he">בקרת איכות</span><span class="en">quality control</span></div></div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span><span class="he">גלול</span><span class="en">scroll</span></span>
+  </div>
+</section>
+
+<!-- ABOUT — g3 light -->
+<div class="light" id="about">
+  <div class="inner">
+    <div class="about-grid">
+      <div>
+        <div class="s-tag"><span class="he">אודות</span><span class="en">About</span></div>
+        <h2 class="s-title-dark" style="margin-bottom:24px"><span class="he">מפעל<br>בלב הגולן</span><span class="en">A Shop<br>in the Golan</span></h2>
+        <p class="s-text-dark">
+          <span class="he">דייקן בגולן היא חברת Job Shop המתמחה בייצור חלקי מתכת מדויקים. אנו משלבים טכנולוגיה מתקדמת עם אמינות הנדסית ומציעים שירות אישי ומהיר ללקוחות בכל הארץ.</span>
+          <span class="en">Daykan Golan is a precision metal job shop combining advanced technology with engineering reliability. Personal, fast service to clients nationwide — large-manufacturer quality with boutique-shop flexibility.</span>
+        </p>
+        <a href="#contact" class="btn-gold"><span class="he">דברו איתנו</span><span class="en">Talk to us</span></a>
+      </div>
+      <div>
+        <div class="about-card">
+          <div class="ac-name"><span class="he">עופר<br>ליברמן</span><span class="en">Ofer<br>Liberman</span></div>
+          <div class="ac-role"><span class="he">מייסד ומנהל | דייקן בגולן</span><span class="en">Founder & Director | Daykan Golan</span></div>
+          <div class="ac-items">
+            <div class="ac-item"><span class="he">הנדסת מכונות ואוטומציה תעשייתית</span><span class="en">Mechanical engineering & industrial automation</span></div>
+            <div class="ac-item"><span class="he">מומחה SolidCAM ותכנות CNC</span><span class="en">SolidCAM & CNC programming expert</span></div>
+            <div class="ac-item"><span class="he">מיקום: דרום רמת הגולן</span><span class="en">Location: Southern Golan Heights</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES — g1 dark -->
+<div class="dark" id="services">
+  <div class="inner">
+    <div class="s-head">
+      <div>
+        <div class="s-tag"><span class="he">שירותים</span><span class="en">Services</span></div>
+        <h2 class="s-title-dark"><span class="he">מה אנחנו עושים</span><span class="en">What We Do</span></h2>
+      </div>
+      <a href="calc-public.html" class="btn-outline-dark"><span class="he">מחשבון מחיר →</span><span class="en">Price estimator →</span></a>
+    </div>
+    <div class="svc-grid">
+      <!-- LASER -->
+      <div class="svc">
+        <div class="svc-n">01</div>
+        <svg class="svc-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M24 4v22M24 26l12 12M24 26L12 38" stroke-linecap="round"/>
+          <circle cx="24" cy="26" r="3.5" fill="currentColor" stroke="none"/>
+          <path d="M9 8Q24 15 39 8" stroke-dasharray="3 2.5"/>
+          <rect x="15" y="34" width="18" height="10" rx="1"/>
+        </svg>
+        <h3 class="svc-name"><span class="he">חיתוך לייזר</span><span class="en">Laser Cutting</span></h3>
+        <p class="svc-desc"><span class="he">חיתוך fiber laser של מתכות בדיוק מירבי. מהפרוטוטייפ לסדרה — אותה איכות בכל פעם.</span><span class="en">Fiber laser cutting with maximum precision. From prototype to production run — consistent quality every time.</span></p>
+        <ul class="svc-specs">
+          <li><span class="he">פלדה, אל-חלד, אלומיניום</span><span class="en">Steel, stainless, aluminium</span></li>
+          <li><span class="he">עובי עד 15מ"מ (ברזל)</span><span class="en">Up to 15mm steel</span></li>
+          <li><span class="he">סבילות ±0.05מ"מ</span><span class="en">±0.05mm tolerance</span></li>
+          <li><span class="he">DXF / STEP / AI</span><span class="en">DXF / STEP / AI files</span></li>
+        </ul>
+      </div>
+      <!-- BENDING -->
+      <div class="svc">
+        <div class="svc-n">02</div>
+        <svg class="svc-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 36L24 36L44 12" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 32L24 32L44 8" stroke-dasharray="3 2" opacity=".35" stroke-linecap="round"/>
+          <circle cx="24" cy="36" r="3.5"/>
+          <line x1="36" y1="24" x2="46" y2="26" stroke-linecap="round"/>
+        </svg>
+        <h3 class="svc-name"><span class="he">כיפוף פחים</span><span class="en">Sheet Bending</span></h3>
+        <p class="svc-desc"><span class="he">פרס ברייק CNC עם חישוב אוטומטי של Bend Allowance. כיפוף מדויק בכל זווית ועובי.</span><span class="en">CNC press brake with automatic bend allowance. Precise bending at any angle and thickness.</span></p>
+        <ul class="svc-specs">
+          <li><span class="he">עובי 0.5 עד 12מ"מ</span><span class="en">0.5 to 12mm thickness</span></li>
+          <li><span class="he">דיוק ±1° או טוב יותר</span><span class="en">±1° accuracy or better</span></li>
+          <li><span class="he">STEP + DXF שטוח</span><span class="en">STEP + flat DXF</span></li>
+          <li><span class="he">DFM אוטומטי</span><span class="en">Automatic DFM</span></li>
+        </ul>
+      </div>
+      <!-- WELDING -->
+      <div class="svc">
+        <div class="svc-n">03</div>
+        <svg class="svc-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M8 40L24 16L40 40" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M14 30h20" stroke-linecap="round"/>
+          <circle cx="24" cy="12" r="5"/>
+          <path d="M24 7V3M19 10l-4-3M29 10l4-3" stroke-linecap="round" opacity=".4"/>
+        </svg>
+        <h3 class="svc-name"><span class="he">ריתוך לייזר</span><span class="en">Laser Welding</span></h3>
+        <p class="svc-desc"><span class="he">ריתוך לייזר ידני לחיבורים נקיים ומדויקים. מינימום עיוות, גמר מקצועי.</span><span class="en">Handheld laser welding for clean, precise joints. Minimal distortion, professional finish.</span></p>
+        <ul class="svc-specs">
+          <li><span class="he">פלדה, אל-חלד, אלומיניום</span><span class="en">Steel, stainless, aluminium</span></li>
+          <li><span class="he">מינימום עיוות חומר</span><span class="en">Minimal distortion</span></li>
+          <li><span class="he">גמר נקי ללא השחרה</span><span class="en">Clean finish, no discolouration</span></li>
+          <li><span class="he">QA על כל פריט</span><span class="en">QA on every part</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHY — g3 light -->
+<div class="light" id="why">
+  <div class="inner">
+    <div class="s-head s-head-light">
+      <div>
+        <div class="s-tag"><span class="he">למה אנחנו</span><span class="en">Why Us</span></div>
+        <h2 class="s-title-dark"><span class="he">מה מבדיל אותנו</span><span class="en">What Sets Us Apart</span></h2>
+      </div>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <svg class="why-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="20" cy="20" r="14"/><path d="M20 12v8l5 3.5" stroke-linecap="round"/></svg>
+        <h3 class="why-title"><span class="he">מהיר</span><span class="en">Fast</span></h3>
+        <p class="why-desc"><span class="he">מחיר מיידי עם העלאת קובץ. ייצור תוך 2–4 ימים. אין המתנה לנציג.</span><span class="en">Instant quote on file upload. Production in 2–4 days. No waiting for a rep.</span></p>
+      </div>
+      <div class="why-card">
+        <svg class="why-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 20l7 7 19-19" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="20" r="16"/></svg>
+        <h3 class="why-title"><span class="he">מדויק</span><span class="en">Precise</span></h3>
+        <p class="why-desc"><span class="he">כל חלק עובר QA עם כרטיס דיגיטלי וקוד QR לאימות תוצאות.</span><span class="en">Every part goes through QA with a digital card and QR code for verification.</span></p>
+      </div>
+      <div class="why-card">
+        <svg class="why-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6C13 6 7 12 7 19s6 13 13 13 13-6 13-13" stroke-linecap="round"/><path d="M28 6l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3 class="why-title"><span class="he">גמיש</span><span class="en">Flexible</span></h3>
+        <p class="why-desc"><span class="he">יחידה אחת או סדרה — אין מינימום. שינויים? נדבר ישר בוואטסאפ.</span><span class="en">One piece or a full run — no minimums. Changes? We'll sort it on WhatsApp.</span></p>
+      </div>
+      <div class="why-card">
+        <svg class="why-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 4l3.5 10.5H34l-8.5 6.5 3 10-9-6-9 6 3-10L5 14.5h10.5z" stroke-linejoin="round"/></svg>
+        <h3 class="why-title"><span class="he">אמין</span><span class="en">Reliable</span></h3>
+        <p class="why-desc"><span class="he">מפעיל יחיד, אחריות מלאה. אתה יודע מי עשה את החלק שלך.</span><span class="en">Single operator, full accountability. You know exactly who made your part.</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROCESS — g1 dark -->
+<div class="dark">
+  <div class="inner">
+    <div class="s-head">
+      <div>
+        <div class="s-tag"><span class="he">תהליך</span><span class="en">Process</span></div>
+        <h2 class="s-title-dark"><span class="he">איך זה עובד</span><span class="en">How It Works</span></h2>
+      </div>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-dot"><span class="step-n">01</span></div>
+        <h3 class="step-title"><span class="he">העלה קובץ</span><span class="en">Upload File</span></h3>
+        <p class="step-desc"><span class="he">DXF, STEP, AI — מחיר תוך שניות. אין טפסים, אין המתנה.</span><span class="en">DXF, STEP, AI — price in seconds. No forms, no waiting.</span></p>
+      </div>
+      <div class="step">
+        <div class="step-dot"><span class="step-n">02</span></div>
+        <h3 class="step-title"><span class="he">בחר ואשר</span><span class="en">Choose & Confirm</span></h3>
+        <p class="step-desc"><span class="he">חומר, עובי, כמות — הכל בלחיצה. DFM אוטומטי בודק בעיות לפני ייצור.</span><span class="en">Material, thickness, quantity — one click. Automatic DFM checks for issues before production.</span></p>
+      </div>
+      <div class="step">
+        <div class="step-dot"><span class="step-n">03</span></div>
+        <h3 class="step-title"><span class="he">ייצור + QA</span><span class="en">Production + QA</span></h3>
+        <p class="step-desc"><span class="he">כל חלק מיוצר ועובר בדיקת איכות. כרטיס QR דיגיטלי עם כל הזמנה.</span><span class="en">Every part is produced and quality-checked. Digital QR card issued with every order.</span></p>
+      </div>
+      <div class="step">
+        <div class="step-dot"><span class="step-n">04</span></div>
+        <h3 class="step-title"><span class="he">משלוח</span><span class="en">Delivery</span></h3>
+        <p class="step-desc"><span class="he">אריזה תעשייתית, מעקב בזמן אמת. ממוצע 2–4 ימי עבודה.</span><span class="en">Industrial packaging, real-time tracking. Average 2–4 business days.</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT — g3 light -->
+<div class="light" id="contact">
+  <div class="inner">
+    <div class="contact-grid">
+      <div>
+        <div class="s-tag"><span class="he">צור קשר</span><span class="en">Contact</span></div>
+        <h2 class="s-title-dark" style="margin-bottom:24px"><span class="he">בואו<br>נדבר</span><span class="en">Let's<br>Talk</span></h2>
+        <p class="s-text-dark"><span class="he">מלאו את הטופס ונחזור אליכם תוך יום עסקים. מעדיפים וואטסאפ? גם זה בסדר.</span><span class="en">Fill the form and we'll get back within one business day. Prefer WhatsApp? That works too.</span></p>
+        <div class="cd">
+          <div class="cd-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2C6.5 2 4 4.2 4 7c0 4.5 5 9 5 9s5-4.5 5-9c0-2.8-2.5-5-5-5z"/><circle cx="9" cy="7" r="1.8"/></svg></div>
+          <div><div class="cd-lbl"><span class="he">מיקום</span><span class="en">Location</span></div><div class="cd-val"><span class="he">דרום רמת הגולן, ישראל</span><span class="en">Southern Golan Heights, Israel</span></div></div>
+        </div>
+        <div class="cd">
+          <div class="cd-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h14v11a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/><path d="M2 4l7 6.5 7-6.5"/></svg></div>
+          <div><div class="cd-lbl"><span class="he">מייל</span><span class="en">Email</span></div><div class="cd-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0e61686b7c4e6a6f77656f60236961626f60206d6163">[email&#160;protected]</a></div></div>
+        </div>
+        <div class="cd">
+          <div class="cd-icon"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3.5 3.5h2.8l1.3 3.2-1.8 1.1c.8 1.6 2 2.9 3.6 3.6l1.1-1.8 3.2 1.3v2.8c0 .5-.4.8-.9.8C6.2 14.5 3 9.5 3 4.4c0-.5.3-.9.8-.9h-.3z"/></svg></div>
+          <div><div class="cd-lbl"><span class="he">וואטסאפ</span><span class="en">WhatsApp</span></div><div class="cd-val">+972-5X-XXX-XXXX</div></div>
+        </div>
+      </div>
+      <div class="cform">
+        <h3 class="cform-title"><span class="he">בקש הצעת מחיר</span><span class="en">Request a Quote</span></h3>
+        <div class="f2">
+          <div class="ff"><label><span class="he">שם</span><span class="en">Name</span></label><input type="text"></div>
+          <div class="ff"><label><span class="he">חברה</span><span class="en">Company</span></label><input type="text"></div>
+        </div>
+        <div class="f2">
+          <div class="ff"><label><span class="he">מייל</span><span class="en">Email</span></label><input type="email"></div>
+          <div class="ff"><label><span class="he">טלפון</span><span class="en">Phone</span></label><input type="tel"></div>
+        </div>
+        <div class="ff">
+          <label><span class="he">שירות</span><span class="en">Service</span></label>
+          <select>
+            <option value="laser"><span class="he">חיתוך לייזר</span><span class="en">Laser cutting</span></option>
+            <option value="bending"><span class="he">כיפוף פחים</span><span class="en">Sheet bending</span></option>
+            <option value="welding"><span class="he">ריתוך לייזר</span><span class="en">Laser welding</span></option>
+            <option value="combined"><span class="he">שילוב שירותים</span><span class="en">Combined</span></option>
+          </select>
+        </div>
+        <div class="ff">
+          <label><span class="he">פרטים</span><span class="en">Details</span></label>
+          <textarea placeholder="חומר, עובי, כמות... / Material, thickness, quantity..."></textarea>
+        </div>
+        <button class="f-submit" onclick="handleSubmit()"><span class="he">שלח בקשה ←</span><span class="en">Send Request ←</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER — g1 dark -->
+<footer>
+  <div class="f-logo">DAYKAN<span>.</span>GOLAN</div>
+  <ul class="f-links">
+    <li><a href="#services"><span class="he">שירותים</span><span class="en">Services</span></a></li>
+    <li><a href="calc-public.html"><span class="he">מחשבון מחיר</span><span class="en">Calculator</span></a></li>
+    <li><a href="part-track.html"><span class="he">מעקב הזמנה</span><span class="en">Track Order</span></a></li>
+    <li><a href="#contact"><span class="he">צור קשר</span><span class="en">Contact</span></a></li>
+  </ul>
+  <div class="f-copy">© 2026 Daykan Golan</div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function toggleLang(){
+  const h=document.documentElement;
+  const n=h.getAttribute('data-lang')==='he'?'en':'he';
+  h.setAttribute('data-lang',n);
+  h.setAttribute('lan

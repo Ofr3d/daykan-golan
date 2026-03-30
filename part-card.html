@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>יצירת כרטיס חלק — PRECIS</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root {
+  --bg:#0f0f0f; --surf:#1a1a1a; --surf2:#222;
+  --bdr:#2e2e2e; --txt:#e8e8e8; --mid:#888; --soft:#555;
+  --accent:#d94f00; --green:#22c55e;
+  --mono:'DM Mono',monospace; --sans:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--txt);padding:28px;font-size:14px}
+
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--bdr)}
+.logo{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--mid);text-transform:uppercase}
+.logo span{color:var(--accent)}
+.badge{font-family:var(--mono);font-size:10px;padding:4px 10px;background:rgba(217,79,0,.12);border:1px solid rgba(217,79,0,.3);color:var(--accent)}
+
+.layout{display:grid;grid-template-columns:420px 1fr;gap:24px;max-width:1100px;margin:0 auto}
+
+/* FORM */
+.card{background:var(--surf);border:1px solid var(--bdr);padding:24px}
+.card-title{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--bdr)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.field{margin-bottom:12px}
+.field label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;background:var(--surf2);border:1px solid var(--bdr);color:var(--txt);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;transition:border-color .15s;-webkit-appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.field textarea{resize:vertical;min-height:70px}
+
+.sep{border:none;border-top:1px solid var(--bdr);margin:18px 0}
+.sec{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:14px}
+
+.serial-box{background:var(--surf2);border:1px solid var(--accent);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.serial-val{font-family:var(--mono);font-size:18px;color:var(--accent);letter-spacing:.06em}
+.serial-btn{font-family:var(--mono);font-size:10px;letter-spacing:.08em;background:transparent;border:1px solid var(--bdr);color:var(--mid);padding:5px 10px;cursor:pointer;transition:border-color .15s}
+.serial-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.gen-btn{width:100%;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--accent);color:#fff;border:none;padding:14px;cursor:pointer;margin-top:16px;transition:opacity .15s}
+.gen-btn:hover{opacity:.85}
+
+.print-btn{width:100%;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--surf2);color:var(--txt);border:1px solid var(--bdr);padding:12px;cursor:pointer;margin-top:10px;transition:border-color .15s}
+.print-btn:hover{border-color:var(--mid)}
+
+/* PREVIEW AREA */
+.preview-wrap{position:sticky;top:24px}
+.preview-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:14px}
+
+/* THE CARD — print target */
+#partCard{
+  background:#fff;
+  color:#111;
+  width:100%;
+  max-width:400px;
+  border:1px solid #ddd;
+  font-family:'DM Sans',sans-serif;
+  page-break-inside:avoid;
+}
+
+.pc-header{
+  background:#111;
+  color:#fff;
+  padding:14px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.pc-logo{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.pc-logo span{color:#d94f00}
+.pc-serial{font-family:'DM Mono',monospace;font-size:11px;color:#888;letter-spacing:.06em}
+
+.pc-body{padding:16px 18px}
+
+.pc-row{display:flex;align-items:flex-start;gap:16px;margin-bottom:14px}
+#qrTarget{flex-shrink:0;width:90px;height:90px;background:#f5f5f5;display:flex;align-items:center;justify-content:center}
+#qrTarget canvas,#qrTarget img{width:90px!important;height:90px!important}
+
+.pc-meta{flex:1}
+.pc-field{margin-bottom:6px}
+.pc-field-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#999;margin-bottom:2px}
+.pc-field-val{font-size:13px;font-weight:500;color:#111;line-height:1.2}
+.pc-field-val.mono{font-family:'DM Mono',monospace;font-size:12px}
+
+.pc-divider{border:none;border-top:1px solid #eee;margin:12px 0}
+
+.pc-qa{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.pc-qa-item{background:#f8f8f8;border:1px solid #eee;padding:8px 10px;text-align:center}
+.pc-qa-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:#999;margin-bottom:4px}
+.pc-qa-val{font-size:15px;font-weight:700;color:#111}
+.pc-qa-val.pass{color:#16a34a}
+.pc-qa-val.fail{color:#dc2626}
+
+.pc-dims{font-family:'DM Mono',monospace;font-size:10px;color:#666;background:#f8f8f8;padding:8px 10px;border:1px solid #eee;margin-bottom:10px}
+.pc-dims-row{display:flex;justify-content:space-between;padding:2px 0}
+
+.pc-notes{font-size:11px;color:#666;line-height:1.5;font-style:italic;background:#fffbf0;border:1px solid #f0e8cc;padding:8px 10px;margin-bottom:10px}
+
+.pc-footer{
+  background:#f8f8f8;
+  border-top:1px solid #eee;
+  padding:10px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.pc-footer-date{font-family:'DM Mono',monospace;font-size:9px;color:#999;letter-spacing:.06em}
+.pc-stamp{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border:1px solid #16a34a;color:#16a34a}
+.pc-stamp.pending{border-color:#f59e0b;color:#f59e0b}
+
+/* STATUS BADGE on card */
+.pc-status-bar{padding:6px 18px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-align:center;text-transform:uppercase}
+.pc-status-bar.approved{background:#f0fdf4;color:#16a34a;border-top:2px solid #16a34a}
+.pc-status-bar.pending{background:#fffbeb;color:#d97706;border-top:2px solid #f59e0b}
+
+/* PRINT STYLES */
+@media print {
+  body{background:#fff;padding:0}
+  .layout{display:block}
+  .card,.preview-label,.print-btn,.gen-btn{display:none!important}
+  #partCard{border:none;max-width:100%;page-break-inside:avoid}
+  .pc-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pc-qa-val.pass{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+@media(max-width:780px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">PRECIS<span>.</span> — כרטיס חלק</div>
+  <div class="badge">🔒 פנימי</div>
+</header>
+
+<div class="layout">
+
+  <!-- FORM -->
+  <div class="card">
+    <div class="card-title">פרטי החלק</div>
+
+    <div class="sec">מספר סדרתי</div>
+    <div class="serial-box">
+      <span class="serial-val" id="serialDisplay">PRECIS-2026-001</span>
+      <button class="serial-btn" onclick="nextSerial()">הבא ↑</button>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>שם לקוח</label>
+        <input type="text" id="fCustomer" placeholder="שם חברה / פרטי" oninput="updatePreview()">
+      </div>
+      <div class="field">
+        <label>מספר הזמנה</label>
+        <input type="text" id="fOrder" placeholder="ORD-2026-042" oninput="updatePreview()">
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>חומר</label>
+        <select id="fMat" onchange="updatePreview()">
+          <option>אלומיניום 6061</option>
+          <option>אל-חלד 304</option>
+          <option>אל-חלד 316</option>
+          <option>פלדה רגילה</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>עובי (מ"מ)</label>
+        <select id="fThick" onchange="updatePreview()">
+          <option>1</option><option>1.5</option><option>2</option>
+          <option>3</option><option>4</option><option>5</option>
+          <option>6</option><option>8</option><option>10</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>שם המפעיל</label>
+        <input type="text" id="fOperator" placeholder="שם פרטי" oninput="updatePreview()">
+      </div>
+      <div class="field">
+        <label>תאריך ייצור</label>
+        <input type="date" id="fDate" oninput="updatePreview()">
+      </div>
+    </div>
+
+    <hr class="sep">
+    <div class="sec">תוצאות QA</div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>מידה נמדדה X (מ"מ)</label>
+        <input type="number" id="qX" placeholder="±0.1" step="0.01" oninput="updatePreview()">
+      </div>
+      <div class="field">
+        <label>מידה נמדדה Y (מ"מ)</label>
+        <input type="number" id="qY" placeholder="±0.1" step="0.01" oninput="updatePreview()">
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <label>בדיקת עין</label>
+        <select id="qVis" onchange="updatePreview()">
+          <option value="pass">✓ תקין</option>
+          <option value="fail">✕ פגם</option>
+          <option value="note">⚠ הערה</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>ציון QA</label>
+        <select id="qGrade" onchange="updatePreview()">
+          <option value="A">A — מעולה</option>
+          <option value="B">B — תקין</option>
+          <option value="C">C — מותנה</option>
+          <option value="F">F — נפסל</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>הערות (מופיע בכרטיס)</label>
+      <textarea id="qNotes" placeholder="גמר תקין, אין שריטות..." oninput="updatePreview()"></textarea>
+    </div>
+
+    <div class="field">
+      <label>כתובת URL בסיס למעקב</label>
+      <input type="text" id="fBaseUrl" value="https://precis.co.il/track/" oninput="updatePreview()">
+    </div>
+
+    <button class="gen-btn" onclick="generateCard()">צור כרטיס + QR ←</button>
+    <button class="print-btn" onclick="window.print()">🖨 הדפס / שמור PDF</button>
+  </div>
+
+  <!-- PREVIEW -->
+  <div class="preview-wrap">
+    <div class="preview-label">תצוגה מקדימה — כרטיס חלק</div>
+
+    <div id="partCard">
+      <div class="pc-header">
+        <span class="pc-logo">PRECIS<span>.</span></span>
+        <span class="pc-serial" id="pcSerial">PRECIS-2026-001</span>
+      </div>
+
+      <div class="pc-status-bar pending" id="pcStatusBar">ממתין לאישור QA</div>
+
+      <div class="pc-body">
+        <div class="pc-row">
+          <div id="qrTarget"><span style="font-size:10px;color:#ccc;text-align:center">QR<br>יופיע<br>כאן</span></div>
+          <div class="pc-meta">
+            <div class="pc-field">
+              <div class="pc-field-label">לקוח</div>
+              <div class="pc-field-val" id="pcCustomer">—</div>
+            </div>
+            <div class="pc-field">
+              <div class="pc-field-label">מספר הזמנה</div>
+              <div class="pc-field-val mono" id="pcOrder">—</div>
+            </div>
+            <div class="pc-field">
+              <div class="pc-field-label">חומר / עובי</div>
+              <div class="pc-field-val mono" id="pcMat">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pc-divider"></div>
+
+        <div class="pc-qa">
+          <div class="pc-qa-item">
+            <div class="pc-qa-label">ציון QA</div>
+            <div class="pc-qa-val pass" id="pcGrade">—</div>
+          </div>
+          <div class="pc-qa-item">
+            <div class="pc-qa-label">בדיקת עין</div>
+            <div class="pc-qa-val" id="pcVis">—</div>
+          </div>
+          <div class="pc-qa-item">
+            <div class="pc-qa-label">מפעיל</div>
+            <div class="pc-qa-val" style="font-size:12px" id="pcOperator">—</div>
+          </div>
+        </div>
+
+        <div class="pc-dims" id="pcDims">
+          <div class="pc-dims-row"><span>מידה X</span><span id="dX">—</span></div>
+          <div class="pc-dims-row"><span>מידה Y</span><span id="dY">—</span></div>
+        </div>
+
+        <div class="pc-notes" id="pcNotes" style="display:none"></div>
+      </div>
+
+      <div class="pc-footer">
+        <span class="pc-footer-date" id="pcDate">—</span>
+        <span class="pc-stamp pending" id="pcStamp">PENDING</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let serialCounter = 1;
+let qrInstance = null;
+
+// Auto-set today
+document.getElementById('fDate').value = new Date().toISOString().split('T')[0];
+
+function padNum(n){ return String(n).padStart(3,'0') }
+function getYear(){ return new Date().getFullYear() }
+
+function getSerial(){
+  return `PRECIS-${getYear()}-${padNum(serialCounter)}`;
+}
+
+function nextSerial(){
+  serialCounter++;
+  document.getElementById('serialDisplay').textContent = getSerial();
+  updatePreview();
+}
+
+function updatePreview(){
+  const serial   = getSerial();
+  const customer = document.getElementById('fCustomer').value || '—';
+  const order    = document.getElementById('fOrder').value    || '—';
+  const mat      = document.getElementById('fMat').value;
+  const thick    = document.getElementById('fThick').value;
+  const operator = document.getElementById('fOperator').value || '—';
+  const date     = document.getElementById('fDate').value;
+  const qX       = document.getElementById('qX').value;
+  const qY       = document.getElementById('qY').value;
+  const vis      = document.getElementById('qVis').value;
+  const grade    = document.getElementById('qGrade').value;
+  const notes    = document.getElementById('qNotes').value;
+
+  document.getElementById('pcSerial').textContent   = serial;
+  document.getElementById('pcCustomer').textContent = customer;
+  document.getElementById('pcOrder').textContent    = order;
+  document.getElementById('pcMat').textContent      = `${mat} · ${thick}מ"מ`;
+  document.getElementById('pcOperator').textContent = operator;
+  document.getElementById('dX').textContent = qX ? qX+'מ"מ' : '—';
+  document.getElementById('dY').textContent = qY ? qY+'מ"מ' : '—';
+
+  // Date format
+  if(date){
+    const d = new Date(date);
+    document.getElementById('pcDate').textContent =
+      d.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric'});
+  }
+
+  // Grade color
+  const gradeEl = document.getElementById('pcGrade');
+  gradeEl.textContent = grade;
+  gradeEl.className = 'pc-qa-val ' + (grade==='A'||grade==='B' ? 'pass' : 'fail');
+
+  // Vis
+  const visMap = {pass:'✓ תקין', fail:'✕ פגם', note:'⚠ הערה'};
+  const visEl  = document.getElementById('pcVis');
+  visEl.textContent = visMap[vis];
+  visEl.className   = 'pc-qa-val ' + (vis==='pass'?'pass':vis==='fail'?'fail':'');
+
+  // Status bar
+  const approved = (grade==='A'||grade==='B') && vis==='pass';
+  const bar = document.getElementById('pcStatusBar');
+  bar.textContent = approved ? '✓ אושר — עבר בדיקת QA' : 'ממתין לאישור QA';
+  bar.className   = 'pc-status-bar ' + (approved?'approved':'pending');
+
+  // Stamp
+  const stamp = document.getElementById('pcStamp');
+  stamp.textContent = approved ? 'APPROVED' : 'PENDING';
+  stamp.className   = 'pc-stamp ' + (approved?'':'pending');
+
+  // Notes
+  const notesEl = document.getElementById('pcNotes');
+  if(notes){ notesEl.textContent = notes; notesEl.style.display='block'; }
+  else { notesEl.style.display='none'; }
+}
+
+function generateCard(){
+  const serial  = getSerial();
+  const baseUrl = document.getElementById('fBaseUrl').value.replace(/\/$/,'');
+  const url     = `${baseUrl}${serial}`;
+
+  // Clear previous QR
+  const target = document.getElementById('qrTarget');
+  target.innerHTML = '';
+
+  try {
+    new QRCode(target, {
+      text: url,
+      width: 90,
+      height: 90,
+      colorDark: '#111111',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } catch(e) {
+    target.innerHTML = `<div style="font-size:9px;color:#666;text-align:center;padding:8px">QR:<br>${serial}</div>`;
+  }
+
+  updatePreview();
+
+  // Scroll to card
+  document.getElementById('partCard').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// Init
+updatePreview();
+</script>
+</body>
+</html>

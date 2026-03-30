@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מחשבון פנימי — חיתוך לייזר</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0f0f0f; --surface:#1a1a1a; --surface2:#222;
+    --border:#2e2e2e; --text:#e8e8e8; --mid:#888; --soft:#555;
+    --accent:#d94f00; --green:#22c55e; --yellow:#eab308; --red:#ef4444;
+    --mono:'DM Mono',monospace; --sans:'DM Sans',sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;padding:28px;font-size:14px}
+
+  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+  .logo{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--mid);text-transform:uppercase}
+  .logo span{color:var(--accent)}
+  .badge{font-family:var(--mono);font-size:10px;padding:4px 10px;background:rgba(217,79,0,.12);border:1px solid rgba(217,79,0,.3);color:var(--accent);letter-spacing:.08em}
+
+  .layout{display:grid;grid-template-columns:1fr 320px;gap:20px;max-width:1060px;margin:0 auto}
+
+  .card{background:var(--surface);border:1px solid var(--border);padding:24px}
+  .card-title{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+
+  label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);margin-bottom:7px}
+  input,select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:13px;padding:9px 12px;outline:none;transition:border-color .15s;-webkit-appearance:none}
+  input:focus,select:focus{border-color:var(--accent)}
+  .note{font-size:11px;color:var(--soft);margin-top:4px}
+
+  .sep{border:none;border-top:1px solid var(--border);margin:20px 0}
+  .sec-label{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:14px}
+
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+  .toggle-row:last-child{border-bottom:none}
+  .tl{font-size:13px;color:var(--mid)}
+  .tl small{display:block;font-family:var(--mono);font-size:10px;color:var(--soft);margin-top:2px}
+  .toggle{position:relative;width:38px;height:20px;flex-shrink:0}
+  .toggle input{opacity:0;width:0;height:0}
+  .ts{position:absolute;inset:0;background:var(--border);cursor:pointer;transition:.2s}
+  .ts::before{content:'';position:absolute;left:3px;top:3px;width:14px;height:14px;background:var(--soft);transition:.2s}
+  input:checked+.ts{background:rgba(217,79,0,.3)}
+  input:checked+.ts::before{transform:translateX(17px);background:var(--accent)}
+
+  .results{display:flex;flex-direction:column;gap:16px}
+
+  .res-main{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--accent);padding:24px;text-align:center}
+  .res-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:10px}
+  .res-price{font-family:var(--mono);font-size:40px;font-weight:500;line-height:1;margin-bottom:4px}
+  .res-vat{font-family:var(--mono);font-size:11px;color:var(--soft);margin-bottom:16px}
+  .profit-bar{height:4px;background:var(--border);margin-bottom:5px}
+  .profit-fill{height:100%;transition:width .3s,background .3s}
+  .profit-lbl{font-family:var(--mono);font-size:10px;color:var(--soft);display:flex;justify-content:space-between}
+
+  .breakdown{background:var(--surface);border:1px solid var(--border);padding:18px}
+  .brow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:12px}
+  .brow:last-child{border-bottom:none}
+  .brow.total{font-size:13px;font-weight:500;color:var(--text);border-top:1px solid var(--border);padding-top:10px;margin-top:2px;border-bottom:none}
+  .bk{color:var(--soft)} .bv{color:var(--text)}
+
+  .flags{background:var(--surface);border:1px solid var(--border);padding:14px 18px;display:flex;flex-direction:column;gap:7px}
+  .flag{font-family:var(--mono);font-size:11px;padding:6px 10px;display:flex;align-items:center;gap:8px}
+  .flag.ok  {background:rgba(34,197,94,.07); color:var(--green);  border-right:2px solid var(--green)}
+  .flag.warn{background:rgba(234,179,8,.07); color:var(--yellow); border-right:2px solid var(--yellow)}
+  .flag.stop{background:rgba(239,68,68,.07); color:var(--red);    border-right:2px solid var(--red)}
+  .flag.h{display:none}
+
+  .client-box{background:var(--surface);border:1px solid var(--border);padding:18px;text-align:center}
+  .cl-label{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:8px}
+  .cl-val{font-family:var(--mono);font-size:20px;color:var(--accent)}
+  .cl-note{font-size:11px;color:var(--soft);margin-top:5px}
+
+  @media(max-width:780px){
+    .layout{grid-template-columns:1fr}
+    .grid2,.grid3{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">PRECIS<span>.</span> — מחשבון פנימי · חיתוך לייזר</div>
+  <div class="badge">🔒 פנימי בלבד</div>
+</header>
+
+<div class="layout">
+  <div class="card">
+    <div class="card-title">פרמטרי הזמנה</div>
+
+    <div class="grid2">
+      <div>
+        <label>חומר</label>
+        <select id="mat" onchange="calc()">
+          <option value="alu">אלומיניום</option>
+          <option value="steel">פלדה רגילה</option>
+          <option value="ss304">אל-חלד 304</option>
+          <option value="ss316">אל-חלד 316</option>
+        </select>
+      </div>
+      <div>
+        <label>עובי (מ"מ)</label>
+        <select id="thick" onchange="calc()">
+          <option value="1">1</option><option value="1.5">1.5</option>
+          <option value="2">2</option><option value="3">3</option>
+          <option value="4">4</option><option value="5">5</option>
+          <option value="6">6</option><option value="8">8</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div>
+        <label>X (מ"מ)</label>
+        <input type="number" id="sx" value="300" min="10" oninput="calc()">
+      </div>
+      <div>
+        <label>Y (מ"מ)</label>
+        <input type="number" id="sy" value="200" min="10" oninput="calc()">
+      </div>
+      <div>
+        <label>כמות</label>
+        <input type="number" id="qty" value="1" min="1" oninput="calc()">
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <label>זמן ריצה (דקות)</label>
+        <input type="number" id="run" value="10" min="1" oninput="calc()">
+        <div class="note">לפי CAM / ניסיון</div>
+      </div>
+      <div>
+        <label>עלות חומר גלם (₪)</label>
+        <input type="number" id="matc" value="80" min="0" oninput="calc()">
+        <div class="note">+10% הובלה אוטומטי</div>
+      </div>
+    </div>
+
+    <hr class="sep">
+    <div class="sec-label">עלויות מכונה ועבודה</div>
+
+    <div class="grid2">
+      <div>
+        <label>עלות שעת מכונה (₪)</label>
+        <input type="number" id="mrate" value="220" min="50" oninput="calc()">
+        <div class="note">K + גז מוכפלים אוטומטי לפי חומר</div>
+      </div>
+      <div>
+        <label>זמן סט-אפ (דקות)</label>
+        <input type="number" id="setup" value="15" min="0" oninput="calc()">
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <label>תעריף עבודה שלך (₪/שעה)</label>
+        <input type="number" id="labor" value="250" min="0" oninput="calc()">
+      </div>
+      <div>
+        <label>מרווח רווח (%)</label>
+        <input type="number" id="margin" value="25" min="0" max="100" oninput="calc()">
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div>
+        <label>עלות גז עזר (₪/דקה)</label>
+        <input type="number" id="gasRate" value="0.35" min="0" step="0.05" oninput="calc()">
+        <div class="note" id="gasNote">מחושב אוטומטי לפי חומר</div>
+      </div>
+      <div>
+        <label>שימוש יעיל בגז (%)</label>
+        <input type="number" id="gasUtil" value="60" min="10" max="100" oninput="calc()">
+        <div class="note">% מזמן הריצה שהגז זורם</div>
+      </div>
+    </div>
+
+    <hr class="sep">
+    <div class="sec-label">תוספות פנימיות</div>
+
+    <div class="toggle-row">
+      <div class="tl">Rush Job <small>+35% על עלות מכונה</small></div>
+      <label class="toggle"><input type="checkbox" id="rush" onchange="calc()"><span class="ts"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div class="tl">חיתוכים פנימיים מרובים <small>+20% על זמן ריצה</small></div>
+      <label class="toggle"><input type="checkbox" id="complex" onchange="calc()"><span class="ts"></span></label>
+    </div>
+    <div class="toggle-row">
+      <div class="tl">אב-טיפוס <small>תוספת 120 ₪ · שמור CAM לסדרה</small></div>
+      <label class="toggle"><input type="checkbox" id="proto" onchange="calc()"><span class="ts"></span></label>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results">
+
+    <div class="res-main">
+      <div class="res-label">מחיר נטו ללקוח</div>
+      <div class="res-price" id="rPrice">—</div>
+      <div class="res-vat" id="rVat">+ מע"מ</div>
+      <div class="profit-bar"><div class="profit-fill" id="pBar" style="width:0%"></div></div>
+      <div class="profit-lbl"><span>רווח נקי</span><span id="pPct">—</span></div>
+    </div>
+
+    <div class="breakdown">
+      <div class="card-title">פירוט עלויות</div>
+      <div class="brow"><span class="bk">חומר גלם (+10%)</span><span class="bv" id="bMat">—</span></div>
+      <div class="brow"><span class="bk">סט-אפ (לחלק)</span><span class="bv" id="bSetup">—</span></div>
+      <div class="brow"><span class="bk">מכונה × K=<span id="kVal">1.0</span></span><span class="bv" id="bMach">—</span></div>
+      <div class="brow"><span class="bk">גז עזר (<span id="gasTypeLabel">—</span>)</span><span class="bv" id="bGas">—</span></div>
+      <div class="brow"><span class="bk">בלאי כלים</span><span class="bv" id="bWear">—</span></div>
+      <div class="brow"><span class="bk">תוספות</span><span class="bv" id="bExtra">—</span></div>
+      <div class="brow total"><span class="bk">עלות לפני רווח</span><span class="bv" id="bBase">—</span></div>
+    </div>
+
+    <div class="flags">
+      <div class="flag ok"   id="fOk">✓ הזמנה תקינה</div>
+      <div class="flag warn h" id="fMin">⚠ מתחת ל-500 ₪ — לא משתלם</div>
+      <div class="flag warn h" id="fThk">⚠ נירוסטה עבה — בדוק חמצן/נוחלת</div>
+      <div class="flag stop h" id="fLim">✕ מעל יכולת מכונה</div>
+      <div class="flag warn h" id="fRush">🔥 Rush — אשר זמינות לפני אישור</div>
+    </div>
+
+    <div class="client-box">
+      <div class="cl-label">מה הלקוח רואה</div>
+      <div class="cl-val" id="cRange">—</div>
+      <div class="cl-note">טווח משוער · לא כולל מע"מ · כפוף לבדיקת קובץ</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const KK = {
+  alu:  {k:1.00, wear:0.05, gas:'חנקן',    gasRate:0.30},
+  steel:{k:1.20, wear:0.08, gas:'חמצן',    gasRate:0.08},
+  ss304:{k:1.65, wear:0.15, gas:'חנקן HP', gasRate:0.45},
+  ss316:{k:1.90, wear:0.18, gas:'חנקן HP', gasRate:0.52},
+};
+const LIM = {alu:20,steel:20,ss304:10,ss316:10};
+const WARN= {alu:99,steel:99,ss304:6, ss316:6 };
+
+function fmt(n){return '₪'+Math.round(n).toLocaleString('he-IL')}
+
+function updateGasDefaults(){
+  const mat = document.getElementById('mat').value;
+  const k   = KK[mat];
+  document.getElementById('gasRate').value = k.gasRate.toFixed(2);
+  document.getElementById('gasNote').textContent =
+    k.gas + ' · ברירת מחדל לפי חומר';
+  document.getElementById('gasTypeLabel').textContent = k.gas;
+}
+
+function calc(){
+  const mat     = document.getElementById('mat').value;
+  const thick   = parseFloat(document.getElementById('thick').value);
+  const qty     = Math.max(1,parseInt(document.getElementById('qty').value)||1);
+  const run     = parseFloat(document.getElementById('run').value)||0;
+  const matc    = parseFloat(document.getElementById('matc').value)||0;
+  const mrate   = parseFloat(document.getElementById('mrate').value)||220;
+  const setup   = parseFloat(document.getElementById('setup').value)||0;
+  const labor   = parseFloat(document.getElementById('labor').value)||250;
+  const mg      = parseFloat(document.getElementById('margin').value)/100||0.25;
+  const gasRate = parseFloat(document.getElementById('gasRate').value)||0;
+  const gasUtil = parseFloat(document.getElementById('gasUtil').value)/100||0.60;
+  const rush    = document.getElementById('rush').checked;
+  const cmplx   = document.getElementById('complex').checked;
+  const proto   = document.getElementById('proto').checked;
+
+  const k = KK[mat];
+
+  // update gas type label live
+  document.getElementById('gasTypeLabel').textContent = k.gas;
+
+  const matCost   = matc * 1.10;
+  const setupCost = (setup/60) * labor / qty;
+  const runAdj    = run * (cmplx ? 1.20 : 1.0);
+  let   machCost  = (runAdj/60) * mrate * k.k;
+  if(rush) machCost *= 1.35;
+  const gasCost   = runAdj * gasUtil * gasRate;   // דקות × ניצול × ₪/דקה
+  const wearCost  = machCost * k.wear;
+  const protoCost = proto ? 150 : 0;
+  const base      = matCost + setupCost + machCost + gasCost + wearCost + protoCost;
+  const price     = base / (1 - mg);
+  const profit    = Math.round((1 - base/price)*100);
+
+  const low  = Math.ceil(price*0.90/10)*10;
+  const high = Math.ceil(price*1.15/10)*10;
+
+  const overLim = thick > LIM[mat];
+  const belowMin= price < 500;
+  const thkWarn = thick >= WARN[mat];
+
+  document.getElementById('rPrice').textContent = fmt(price);
+  document.getElementById('rVat').textContent   = fmt(price*1.17)+' כולל מע"מ';
+  document.getElementById('kVal').textContent   = k.k.toFixed(2);
+
+  document.getElementById('bMat').textContent   = fmt(matCost);
+  document.getElementById('bSetup').textContent = fmt(setupCost);
+  document.getElementById('bMach').textContent  = fmt(machCost);
+  document.getElementById('bGas').textContent   = fmt(gasCost);
+  document.getElementById('bWear').textContent  = fmt(wearCost);
+  document.getElementById('bExtra').textContent = protoCost ? fmt(protoCost) : '—';
+  document.getElementById('bBase').textContent  = fmt(base);
+
+  const bar = document.getElementById('pBar');
+  bar.style.width = Math.min(profit,100)+'%';
+  bar.style.background = profit>=25?'#22c55e':profit>=15?'#eab308':'#ef4444';
+  document.getElementById('pPct').textContent = profit+'%';
+
+  document.getElementById('cRange').textContent =
+    low.toLocaleString('he-IL')+'–'+high.toLocaleString('he-IL')+' ₪';
+
+  const h = c => c.classList.add('h');
+  const s = c => c.classList.remove('h');
+  const fOk=document.getElementById('fOk'), fMin=document.getElementById('fMin'),
+        fThk=document.getElementById('fThk'),fLim=document.getElementById('fLim'),
+        fRush=document.getElementById('fRush');
+
+  h(fOk);h(fMin);h(fThk);h(fLim);h(fRush);
+  if(overLim)             s(fLim);
+  else if(belowMin)       s(fMin);
+  else                    s(fOk);
+  if(thkWarn && !overLim) s(fThk);
+  if(rush)                s(fRush);
+}
+
+// כשמחליפים חומר — עדכן גז אוטומטית
+document.getElementById('mat').addEventListener('change', () => {
+  updateGasDefaults();
+  calc();
+});
+
+updateGasDefaults();
+calc();
+</script>
+</body>
+</html>
